@@ -8,12 +8,14 @@ ub1
 
 [ubuntu:vars]
 ssh_service=ssh
+apache_service=apache2
 
 [centos]
 centos0
 
 [centos:vars]
 ssh_service=sshd
+apache_service=httpd
 
 [webservers]
 centos0

@@ -5,19 +5,11 @@
 
   tasks:
 
-  - name: Asegurar paquete httpd instalado (centos)
-    yum:
-      pkg: httpd
+  - name: Asegurar paquete apache instalado
+    ansible.builtin.package:
+      name: "{{ apache_service }}"
       state: latest
-    when: ansible_facts['os_family'] == "RedHat"
-    notify: Reiniciar httpd
-
-  - name: Asegurar paquete apache2 instalado (ubuntu)
-    ansible.builtin.apt:
-      pkg: apache2
-      state: latest
-    when: ansible_facts['os_family'] == "Debian"
-    notify: Reiniciar apache2
+    notify: Reiniciar webserver
       
   - name: Asegurar archivo index.html esta presente
     copy:
@@ -51,15 +43,8 @@
 
   handlers:
 
-    - name: Reiniciar httpd
+    - name: Reiniciar webserver
       service:
-        name: httpd
+        name: "{{ apache_service }}"
         state: restarted
-      when: ansible_facts['os_family'] == "RedHat"
-
-    - name: Reiniciar apache2
-      service:
-        name: apache2
-        state: restarted
-      when: ansible_facts['os_family'] == "Debian"
 ...
