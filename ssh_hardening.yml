@@ -1,0 +1,36 @@
+---
+- hosts: webservers
+  user: sysadmin
+  become: yes
+  gather_facts: no
+
+  tasks:
+
+    - name: Deshabilitar el usuario ROOT para login
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '#PermitRootLogin'
+        line: PermitRootLogin no
+      notify: Reinicio SSH
+
+    - name: Deshabilitar inicio de sesión basado en contraseña
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '#AuthenticationMethods'
+        line: AuthenticationMethods publickey
+      notify: Reinicio SSH
+
+    - name: Habilitar inicio de sesion con llave publica
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '#PubkeyAuthentication'
+        line: PubkeyAuthentication yes
+      notify: Reinicio SSH
+ 
+  handlers:
+    - name: Reinicio SSH
+      service:
+        name: "{{ ssh_service }}"
+        state: restarted
+
+...
