@@ -1,0 +1,65 @@
+---
+- hosts: webservers
+  user: sysadmin
+  become: yes
+
+  tasks:
+
+  - name: Asegurar paquete httpd instalado (centos)
+    yum:
+      pkg: httpd
+      state: latest
+    when: ansible_facts['os_family'] == "RedHat"
+    notify: Reiniciar httpd
+
+  - name: Asegurar paquete apache2 instalado (ubuntu)
+    ansible.builtin.apt:
+      pkg: apache2
+      state: latest
+    when: ansible_facts['os_family'] == "Debian"
+    notify: Reiniciar apache2
+      
+  - name: Asegurar archivo index.html esta presente
+    copy:
+      src: ./files/index.html
+      dest: /var/www/html/index.html
+
+  - name: Habilitar puerto HTTPD/80 en FirewallD 
+    ansible.posix.firewalld:
+      service: http
+      state: enabled
+      permanent: true
+      immediate: true
+      offline: true
+    when: ansible_facts['os_family'] == "RedHat"
+  
+  - name: Habilitar puerto SSH/22 en ufw
+    community.general.ufw:
+      rule: allow
+      state: enabled
+      port: ssh
+      proto: tcp
+    when: ansible_facts['os_family'] == "Debian"
+
+  - name: Habilitar puerto HTTPD/80 en ufw
+    community.general.ufw:
+      rule: allow
+      state: enabled
+      port: http
+      proto: tcp
+    when: ansible_facts['os_family'] == "Debian"
+
+  handlers:
+
+    - name: Reiniciar httpd
+      service:
+        name: httpd
+        state: restarted
+      when: ansible_facts['os_family'] == "RedHat"
+
+    - name: Reiniciar apache2
+      service:
+        name: apache2
+        state: restarted
+      when: ansible_facts['os_family'] == "Debian"
+...
