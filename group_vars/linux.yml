@@ -1,0 +1,4 @@
+---
+# Variables para Linux
+ssh_service: ssh
+

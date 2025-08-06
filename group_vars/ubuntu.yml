@@ -1,0 +1,4 @@
+---
+# Variables para Ubuntu
+apache_service: apache2
+

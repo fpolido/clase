@@ -1,0 +1,4 @@
+---
+# Variables para CentOS
+apache_service: httpd
+
