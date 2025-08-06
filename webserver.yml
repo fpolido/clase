@@ -11,9 +11,15 @@
       state: latest
     notify: Reiniciar webserver
       
+  - name: Asegurar que apache inicia en boot
+    service:
+      name: "{{ apache_service }}"
+      state: started
+      enabled: yes
+ 
   - name: Asegurar archivo index.html esta presente
-    copy:
-      src: ./files/index.html
+    template:
+      src: ./templates/index.j2
       dest: /var/www/html/index.html
 
   - name: Habilitar puertos en firewalld
@@ -36,4 +42,5 @@
       service:
         name: "{{ apache_service }}"
         state: restarted
+        enabled: yes
 ...
