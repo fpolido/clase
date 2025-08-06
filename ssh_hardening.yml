@@ -6,25 +6,15 @@
 
   tasks:
 
-    - name: Deshabilitar el usuario ROOT para login
+    - name: Aplico medidas de seguridad a SSH
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
-        regexp: '#PermitRootLogin'
-        line: PermitRootLogin no
-      notify: Reinicio SSH
-
-    - name: Deshabilitar inicio de sesión basado en contraseña
-      ansible.builtin.lineinfile:
-        path: /etc/ssh/sshd_config
-        regexp: '#AuthenticationMethods'
-        line: AuthenticationMethods publickey
-      notify: Reinicio SSH
-
-    - name: Habilitar inicio de sesion con llave publica
-      ansible.builtin.lineinfile:
-        path: /etc/ssh/sshd_config
-        regexp: '#PubkeyAuthentication'
-        line: PubkeyAuthentication yes
+        regexp: "{{ item.abuscar }}"
+        line: "{{ item.reemplazo }}"
+      loop:
+        - { abuscar: '#PermitRootLogin', reemplazo: 'PermitRootLogin no' }
+        - { abuscar: '#AuthenticationMethedos', reemplazo: 'AuthenticationMethods publickey' } 
+        - { abuscar: '#PubkeyAuthentication', reemplazo: 'PubkeyAuthentication yes' }
       notify: Reinicio SSH
  
   handlers:
