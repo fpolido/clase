@@ -18,14 +18,14 @@
 
   - name: Habilitar puertos en firewalld
     ansible.builtin.include_tasks:
-      file: fwd_loop_task.yml
+      file: ./tasks/fwd_loop_task.yml
     loop:
       - ssh
       - http
 
   - name: Habilitar puertos en ufw
     ansible.builtin.include_tasks:
-      file: ufw_loop_task.yml
+      file: ./tasks/ufw_loop_task.yml
     loop:
       - ssh
       - http
